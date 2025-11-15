@@ -2,7 +2,7 @@
 
 A developer-first Platform-as-a-Service built with Java 21 and Spring Boot that abstracts away infrastructure complexity, allowing developers to deploy applications with zero DevOps knowledge.
 
-## Features
+## ⭐ Core Features
 
 - **Multi-Source Deployment**: Git, Docker Registry, Dockerfile, Buildpacks
 - **Application Management**: Web Services, Workers, Cron Jobs, Static Sites
@@ -12,6 +12,23 @@ A developer-first Platform-as-a-Service built with Java 21 and Spring Boot that 
 - **Monitoring & Observability**: Built-in metrics, logging, and health checks
 - **REST API**: Complete platform control via RESTful API
 - **OpenAPI Documentation**: Interactive API docs with Swagger UI
+
+## 🚀 Advanced Features (NEW!)
+
+This platform now includes enterprise-grade advanced features:
+
+- **✅ Kubernetes Integration** - Real deployments to K8s clusters with HPA
+- **✅ Docker Build Service** - Build images from Git repositories
+- **✅ Multi-Tenancy & RBAC** - Organizations, projects, users with role-based access
+- **✅ Auto-Scaling** - Horizontal Pod Autoscaling with CPU/Memory metrics
+- **✅ Real-time Logging** - WebSocket-based log streaming
+- **✅ Managed Databases** - PostgreSQL, MySQL, MongoDB, Redis provisioning
+- **✅ Audit Logging** - Complete audit trail for compliance
+- **✅ Notification System** - Slack, Email, Webhooks for alerts
+- **✅ JWT Authentication** - Secure API access with token-based auth
+- **✅ Prometheus & Grafana** - Advanced metrics and monitoring
+
+**📖 See [ADVANCED_FEATURES.md](ADVANCED_FEATURES.md) for detailed documentation on all advanced features.**
 
 ## Technology Stack
 
@@ -106,8 +123,10 @@ Once running, you can access:
 - **Swagger UI**: http://localhost:8080/swagger-ui.html
 - **API Docs**: http://localhost:8080/api-docs
 - **Health Check**: http://localhost:8080/actuator/health
-- **Metrics**: http://localhost:8080/actuator/metrics
+- **Prometheus Metrics**: http://localhost:8080/actuator/prometheus
 - **pgAdmin**: http://localhost:5050 (admin@platform.com / admin123)
+- **Prometheus**: http://localhost:9090
+- **Grafana**: http://localhost:3000 (admin / admin)
 
 ## API Endpoints
 
