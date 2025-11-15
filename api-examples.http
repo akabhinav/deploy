@@ -1,0 +1,278 @@
+### Porter-like PaaS Platform - API Examples
+### Use with VS Code REST Client extension or similar tools
+
+@baseUrl = http://localhost:8080
+@contentType = application/json
+
+### Health Check
+GET {{baseUrl}}/actuator/health
+
+### Get API Documentation
+GET {{baseUrl}}/api-docs
+
+###
+### ENVIRONMENTS
+###
+
+### Get all environments
+GET {{baseUrl}}/api/v1/environments
+
+### Create development environment
+POST {{baseUrl}}/api/v1/environments
+Content-Type: {{contentType}}
+
+{
+  "name": "development",
+  "description": "Development environment for testing",
+  "namespace": "dev",
+  "clusterId": "local-k8s",
+  "environmentVariables": {
+    "LOG_LEVEL": "DEBUG",
+    "DEBUG": "true"
+  },
+  "autoDeployEnabled": true
+}
+
+### Create staging environment
+POST {{baseUrl}}/api/v1/environments
+Content-Type: {{contentType}}
+
+{
+  "name": "staging",
+  "description": "Staging environment for pre-production testing",
+  "namespace": "staging",
+  "clusterId": "local-k8s",
+  "environmentVariables": {
+    "LOG_LEVEL": "INFO"
+  },
+  "autoDeployEnabled": false
+}
+
+### Create production environment
+POST {{baseUrl}}/api/v1/environments
+Content-Type: {{contentType}}
+
+{
+  "name": "production",
+  "description": "Production environment",
+  "namespace": "prod",
+  "clusterId": "production-k8s",
+  "environmentVariables": {
+    "LOG_LEVEL": "WARN"
+  },
+  "autoDeployEnabled": false
+}
+
+### Get environment by ID
+GET {{baseUrl}}/api/v1/environments/1
+
+### Get environment by name
+GET {{baseUrl}}/api/v1/environments/name/development
+
+### Update environment
+PUT {{baseUrl}}/api/v1/environments/1
+Content-Type: {{contentType}}
+
+{
+  "description": "Updated development environment",
+  "autoDeployEnabled": false
+}
+
+### Delete environment
+DELETE {{baseUrl}}/api/v1/environments/1
+
+###
+### APPLICATIONS
+###
+
+### Get all applications
+GET {{baseUrl}}/api/v1/applications
+
+### Create web service application
+POST {{baseUrl}}/api/v1/applications
+Content-Type: {{contentType}}
+
+{
+  "name": "web-api",
+  "description": "Main web API service",
+  "applicationType": "WEB_SERVICE",
+  "sourceType": "DOCKER_REGISTRY",
+  "dockerImage": "nginx:latest",
+  "port": 80,
+  "replicas": 2,
+  "environmentId": "1",
+  "environmentVariables": {
+    "NODE_ENV": "development",
+    "API_URL": "http://api.example.com"
+  },
+  "resources": {
+    "cpuRequest": "100m",
+    "cpuLimit": "500m",
+    "memoryRequest": "128Mi",
+    "memoryLimit": "512Mi"
+  },
+  "healthCheck": {
+    "path": "/health",
+    "port": 80,
+    "initialDelaySeconds": 30,
+    "periodSeconds": 10,
+    "timeoutSeconds": 5,
+    "failureThreshold": 3
+  }
+}
+
+### Create worker application
+POST {{baseUrl}}/api/v1/applications
+Content-Type: {{contentType}}
+
+{
+  "name": "background-worker",
+  "description": "Background job processor",
+  "applicationType": "WORKER",
+  "sourceType": "GIT",
+  "repositoryUrl": "https://github.com/example/worker.git",
+  "branch": "main",
+  "buildCommand": "npm install && npm run build",
+  "startCommand": "npm start",
+  "replicas": 3,
+  "resources": {
+    "cpuRequest": "200m",
+    "cpuLimit": "1000m",
+    "memoryRequest": "256Mi",
+    "memoryLimit": "1Gi"
+  }
+}
+
+### Create static site application
+POST {{baseUrl}}/api/v1/applications
+Content-Type: {{contentType}}
+
+{
+  "name": "docs-site",
+  "description": "Documentation static site",
+  "applicationType": "STATIC_SITE",
+  "sourceType": "GIT",
+  "repositoryUrl": "https://github.com/example/docs.git",
+  "branch": "main",
+  "buildCommand": "npm run build",
+  "port": 3000,
+  "replicas": 1
+}
+
+### Get application by ID
+GET {{baseUrl}}/api/v1/applications/1
+
+### Get application by name
+GET {{baseUrl}}/api/v1/applications/name/web-api
+
+### Get applications by environment
+GET {{baseUrl}}/api/v1/applications/environment/1
+
+### Update application
+PUT {{baseUrl}}/api/v1/applications/1
+Content-Type: {{contentType}}
+
+{
+  "description": "Updated web API service",
+  "replicas": 3,
+  "environmentVariables": {
+    "NODE_ENV": "production",
+    "API_URL": "http://api.example.com",
+    "CACHE_ENABLED": "true"
+  }
+}
+
+### Delete application
+DELETE {{baseUrl}}/api/v1/applications/1
+
+###
+### DEPLOYMENTS
+###
+
+### Get all deployments
+GET {{baseUrl}}/api/v1/deployments
+
+### Create deployment (Rolling)
+POST {{baseUrl}}/api/v1/deployments
+Content-Type: {{contentType}}
+
+{
+  "applicationId": 1,
+  "version": "1.0.0",
+  "gitCommitSha": "abc123def456",
+  "deploymentStrategy": "ROLLING",
+  "triggeredBy": "user@example.com",
+  "metadata": {
+    "releaseNotes": "Initial release",
+    "environment": "development"
+  }
+}
+
+### Create deployment (Blue-Green)
+POST {{baseUrl}}/api/v1/deployments
+Content-Type: {{contentType}}
+
+{
+  "applicationId": 1,
+  "version": "1.1.0",
+  "gitCommitSha": "def456abc789",
+  "deploymentStrategy": "BLUE_GREEN",
+  "triggeredBy": "ci-system",
+  "metadata": {
+    "releaseNotes": "Bug fixes and improvements",
+    "jiraTicket": "PROJ-123"
+  }
+}
+
+### Create deployment (Canary)
+POST {{baseUrl}}/api/v1/deployments
+Content-Type: {{contentType}}
+
+{
+  "applicationId": 1,
+  "version": "2.0.0",
+  "gitCommitSha": "xyz789abc123",
+  "deploymentStrategy": "CANARY",
+  "triggeredBy": "admin@example.com",
+  "metadata": {
+    "releaseNotes": "Major version upgrade",
+    "canaryPercentage": "10"
+  }
+}
+
+### Get deployment by ID
+GET {{baseUrl}}/api/v1/deployments/1
+
+### Get deployments by application
+GET {{baseUrl}}/api/v1/deployments/application/1
+
+### Get deployments by application (paginated)
+GET {{baseUrl}}/api/v1/deployments/application/1/paginated?page=0&size=10&sort=createdAt,desc
+
+### Update deployment status to IN_PROGRESS
+PATCH {{baseUrl}}/api/v1/deployments/1/status?status=IN_PROGRESS
+
+### Update deployment status to SUCCESS
+PATCH {{baseUrl}}/api/v1/deployments/1/status?status=SUCCESS
+
+### Update deployment status to FAILED
+PATCH {{baseUrl}}/api/v1/deployments/1/status?status=FAILED
+
+###
+### MONITORING
+###
+
+### Get application metrics
+GET {{baseUrl}}/actuator/metrics
+
+### Get JVM memory metrics
+GET {{baseUrl}}/actuator/metrics/jvm.memory.used
+
+### Get HTTP request metrics
+GET {{baseUrl}}/actuator/metrics/http.server.requests
+
+### Get all actuator endpoints
+GET {{baseUrl}}/actuator
+
+### Application info
+GET {{baseUrl}}/actuator/info
