@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:postgres}:${DB_PORT:5432}/${DB_NAME:platformdb}
+    username: ${DB_USERNAME:platform}
+    password: ${DB_PASSWORD:platform123}
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+
+# JWT configuration
+jwt:
+  secret: ${JWT_SECRET:my-super-secret-key-for-jwt-token-generation-minimum-256-bits-long-string-for-security}
+  expiration: 86400000  # 24 hours
+  refresh-expiration: 604800000  # 7 days
